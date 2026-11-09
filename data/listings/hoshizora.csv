@@ -1,0 +1,9 @@
+sku,brand,name,ref,grade,price,store_pickup,ships_overseas,shipping_fee,accessories,listed_on,status
+HOS-1002,Chanel,"Classic Flap Bag, Medium",A01112,AB,1240000,yes,yes,6800,保存袋,2026-10-10,available
+HOS-1010,Louis Vuitton,"Speedy 30, Monogram Multicolore",M92643,A,168000,yes,yes,4200,保存袋,2026-11-01,available
+HOS-1026,Chanel,Vintage CC Turnlock Earrings,94P,A,112000,yes,yes,2200,箱,2026-11-05,available
+HOS-1029,Dior,"Saddle Bag, Oblique",,AB,348000,yes,yes,4200,保存袋,2026-10-31,available
+HOS-1067,Gucci,Jackie 1961 Small Shoulder Bag,636709,AB,184000,yes,yes,4000,保存袋,2026-10-18,available
+HOS-1081,Maison Margiela,Tabi Ankle Boots,S57WU0153,A,122000,yes,yes,3800,箱;保存袋,2026-11-04,available
+HOS-1086,Louis Vuitton,"Neverfull MM, Damier Ebène",N41358,B,176000,yes,yes,4200,,2026-09-29,available
+HOS-1088,Chanel,Vintage Faux Pearl Long Necklace,,AB,152000,yes,yes,2600,,2026-10-21,available

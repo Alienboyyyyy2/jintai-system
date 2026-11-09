@@ -1,0 +1,11 @@
+id,name_en,name_ja,type,area_en,area_ja,city,hours,languages,tax_refund,ships_overseas,since,rating
+marukawa,MARUKAWA Brand,マルカワブランド,chain,Tokyo · Ginza / Shinjuku,東京・銀座／新宿,Tokyo,11:00–20:00,EN;ZH;KO,yes,yes,1979,4.6
+nikai,Nikai Second,ニカイセカンド,chain,Nationwide · 410 stores,全国・410店舗,Nationwide,10:00–21:00,EN,yes,no,1996,4.1
+urahara,Ura-Hara Archive,裏原アーカイブ,designer,Tokyo · Shibuya,東京・渋谷,Tokyo,12:00–20:00,EN;ZH,yes,yes,2004,4.7
+kinari,Kinari Select,キナリセレクト,designer,Tokyo · Harajuku,東京・原宿,Tokyo,11:00–20:00,EN,yes,yes,1988,4.5
+kotori,Maison Kotori,メゾン・コトリ,vintage,Tokyo · Omotesando,東京・表参道,Tokyo,12:00–19:00,EN;FR,yes,yes,2009,4.8
+hoshizora,Hoshizora Vintage,ホシゾラヴィンテージ,vintage,Tokyo · Harajuku,東京・原宿,Tokyo,12:00–20:00,EN;ZH;KO,yes,yes,2012,4.7
+rokuyo,Ginza Rokuyo,銀座六曜,luxury,Tokyo · Ginza,東京・銀座,Tokyo,11:00–19:30,EN;ZH,yes,yes,2001,4.6
+naniwa,Naniwa Brand Market,なにわブランドマーケット,chain,Osaka · Shinsaibashi,大阪・心斎橋,Osaka,11:00–20:00,EN;ZH;KO;TH,yes,no,1991,4.3
+tenjin,Tenjin Re:Style,天神リスタイル,designer,Fukuoka · Tenjin,福岡・天神,Fukuoka,11:00–20:00,EN;KO,yes,yes,2015,4.4
+sanjo,Sanjo Tokeido,三条時計堂,watch,Kyoto · Sanjo,京都・三条,Kyoto,10:30–19:00,EN,yes,yes,1968,4.9
