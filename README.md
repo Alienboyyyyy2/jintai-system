@@ -18,11 +18,24 @@ A working prototype that compares the same pre-owned item across Japanese resale
 ## Structure
 ```
 index.html        page shell (published as an Artifact; the host adds <html>/<head>/<body>)
-assets/data.js    sample shops + items  ← replace with a real feed (same shape)
+data/             CSV source data: shops, product catalogue, one listings file per shop
+scripts/          CSV import: validate, normalise, match listings to products, write assets/data.js
+tests/            import tests (node --test)
+assets/data.js    GENERATED from data/*.csv — do not edit by hand
 assets/i18n.js    EN / JA strings
 assets/app.js     state, pricing rules, routing, rendering
 assets/app.css    design tokens and layout
 ```
+
+## Updating the data
+Edit the CSV files in `data/` (see `data/README.md` for the format, in Japanese), then:
+```
+npm run build:data   # validate, match and write assets/data.js
+npm test             # import tests
+```
+Shops can send their listings as a CSV (Excel "CSV UTF-8" is fine). Grades, prices, dates and
+accessories are accepted in common Japanese and English forms. Listings that match no product are
+written to `build/unmatched.csv`.
 
 ## Run locally
 Any static server works, e.g. `python3 -m http.server` and open http://localhost:8000.

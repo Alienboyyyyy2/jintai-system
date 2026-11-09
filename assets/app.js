@@ -17,9 +17,17 @@
   const ZONE_X = { asia: 1, na: 1.5, eu: 1.6, oc: 1.4 };
   const REFUND_MIN = 5000; // JPY before tax, general goods
 
+  // Whole days from a YYYY-MM-DD listing date to today (local time); unknown date -> null
+  function daysSince(d) {
+    if (!d) return null;
+    const [y, m, day] = d.split("-").map(Number);
+    const now = new Date();
+    return Math.max(0, Math.round((Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - Date.UTC(y, m - 1, day)) / 864e5));
+  }
+
   // Expand offer tuples once
   ITEMS.forEach(it => {
-    it.offers = it.offers.map(([s, g, p, pickup, ship, fee, acc, days]) => ({ s, g, p, pickup: !!pickup, ship: !!ship, fee, acc, days }));
+    it.offers = it.offers.map(([s, g, p, pickup, ship, fee, acc, listed]) => ({ s, g, p, pickup: !!pickup, ship: !!ship, fee, acc, days: daysSince(listed) }));
     it.minIncl = Math.min(...it.offers.map(o => o.p));
   });
 
@@ -137,7 +145,7 @@
       .map(it => ({ it, os: offersOf(it, true) })).filter(r => r.os.length)
       .filter(r => (lo == null || r.os[0].eff >= lo) && (hi == null || r.os[0].eff <= hi));
     const gap = r => r.os.at(-1).eff - r.os[0].eff;
-    const newest = r => Math.min(...r.os.map(o => o.days));
+    const newest = r => Math.min(...r.os.map(o => o.days ?? 9999));
     rows.sort((a, b) => st.sort === "low" ? a.os[0].eff - b.os[0].eff : st.sort === "offers" ? b.os.length - a.os.length || a.os[0].eff - b.os[0].eff :
       st.sort === "new" ? newest(a) - newest(b) : gap(b) - gap(a));
     return rows;
@@ -299,7 +307,7 @@
           <td>${gradeTag(o.g)}</td>
           <td class="sm">${accTxt(o.acc)}</td>
           <td><div class="tags">${o.pickup ? `<span class="tag">${t("pickup")}</span>` : ""}${o.ship ? `<span class="tag ok">${t("overseas")}</span>` : `<span class="tag">${t("jponly")}</span>`}</div></td>
-          <td class="sm muted">${t("daysAgo")(o.days)}</td>
+          <td class="sm muted">${o.days == null ? "—" : t("daysAgo")(o.days)}</td>
           <td class="num"><strong>${fmt(o.eff)}</strong>${o.parts.length > 1 ? `<small>${o.parts.map(([k, v]) => `${v < 0 ? "−" : "+"}${fmt(Math.abs(v))}`).slice(1).join(" ")}</small>` : ""}</td>
           <td><button class="go" data-go="${esc(SHOPS[o.s].n)}">${t("view")}</button></td>
         </tr>`).join("")}</tbody>
