@@ -1,0 +1,44 @@
+<title>Tsugi Resale Compare</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Compare pre-owned luxury and designer items across Japan's resale shops.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+JP:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+
+<header class="top">
+  <div class="gut top-in">
+    <a class="logo" href="#search"><b>Tsugi</b><span id="tagline"></span></a>
+    <nav id="nav" aria-label="Main"></nav>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Language">
+        <button id="l-en" data-lang="en">EN</button><button id="l-ja" data-lang="ja">日本語</button>
+      </div>
+      <label class="cur"><span class="sr" id="curLbl">Currency</span>
+        <select id="cur" aria-labelledby="curLbl">
+          <option value="JPY">¥ JPY</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option>
+          <option value="GBP">£ GBP</option><option value="CNY">CN¥ CNY</option><option value="KRW">₩ KRW</option>
+          <option value="TWD">NT$ TWD</option><option value="HKD">HK$ HKD</option><option value="SGD">S$ SGD</option>
+          <option value="AUD">A$ AUD</option><option value="THB">฿ THB</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  <div class="buybar" id="buybar">
+    <div class="gut buy-in">
+      <span class="buy-lbl" id="buyLbl"></span>
+      <div class="segs" id="modes" role="group"></div>
+      <label class="dest" id="destWrap"><span id="destLbl"></span><select id="dest"></select></label>
+      <p class="mode-hint" id="modeHint"></p>
+    </div>
+  </div>
+</header>
+
+<main class="gut">
+  <div id="view"></div>
+  <p class="note"><span id="demo"></span> · <span id="note"></span></p>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="assets/data.js"></script>
+<script src="assets/i18n.js"></script>
+<script src="assets/app.js"></script>
