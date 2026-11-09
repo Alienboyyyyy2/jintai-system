@@ -124,11 +124,20 @@ test("build: missing columns are reported", () => {
   assert.ok(problems.some(p => p.level === "error" && /missing column\(s\): grade, price/.test(p.msg)));
 });
 
-test("the repository's own CSV files build cleanly and match assets/data.js", () => {
+test("the repository's own CSV files build without problems", () => {
   const read = f => readFileSync(new URL(`../${f}`, import.meta.url), "utf8");
   const listingCSVs = {};
   for (const f of readdirSync(new URL("../data/listings/", import.meta.url))) listingCSVs[f.replace(/\.csv$/, "")] = read(`data/listings/${f}`);
   const { data, problems } = buildData({ shopsCSV: read("data/shops.csv"), brandsCSV: read("data/brands.csv"), productsCSV: read("data/products.csv"), listingCSVs });
   assert.deepEqual(problems, []);
-  assert.equal(renderDataJS(data), read("assets/data.js"), "run `npm run build:data` and commit assets/data.js");
+  assert.ok(data.ITEMS.length > 0);
+  assert.match(renderDataJS(data), /^\/\* GENERATED/);
+});
+
+test("Shift_JIS files from Excel are decoded", async () => {
+  const { decodeText } = await import("../scripts/lib/decode.mjs");
+  // "ブランド,価格" in Shift_JIS
+  const sjis = new Uint8Array([0x83, 0x75, 0x83, 0x89, 0x83, 0x93, 0x83, 0x68, 0x2c, 0x89, 0xbf, 0x8a, 0x69]);
+  assert.deepEqual(decodeText(sjis), { text: "ブランド,価格", encoding: "Shift_JIS" });
+  assert.equal(decodeText(new TextEncoder().encode("ブランド")).encoding, "UTF-8");
 });

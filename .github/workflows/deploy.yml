@@ -1,0 +1,59 @@
+# Upload a CSV to data/listings/ on main (GitHub web: Add file → Upload files) and this
+# rebuilds assets/data.js, commits it, and publishes the site to GitHub Pages.
+# If a CSV has errors, nothing is published and the run summary lists each bad row.
+name: Deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Import CSV files
+        run: node scripts/build-data.mjs --summary "$GITHUB_STEP_SUMMARY"
+      - run: npm test
+      - name: Keep unmatched listings for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unmatched-listings
+          path: build/unmatched.csv
+          if-no-files-found: ignore
+      - name: Commit the rebuilt data file
+        run: |
+          if git diff --quiet -- assets/data.js; then
+            echo "assets/data.js already up to date"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+            git add assets/data.js
+            git commit -m "Rebuild assets/data.js from CSV"
+            git push
+          fi
+      - name: Assemble site
+        run: node scripts/build-site.mjs
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

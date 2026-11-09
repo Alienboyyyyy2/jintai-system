@@ -116,7 +116,7 @@
     const h = (location.hash || "").replace(/^#/, "");
     const m = /^item-(\d+)$/.exec(h);
     if (m && itemById(+m[1])) return { view: "item", id: +m[1] };
-    if (["shops", "watchlist", "guide"].includes(h)) return { view: h };
+    if (["shops", "watchlist", "guide", "check"].includes(h)) return { view: h };
     return { view: "search" };
   }
   function go(hash) { if (location.hash === "#" + hash) render(); else location.hash = hash; }
@@ -396,6 +396,37 @@
     </div>`;
   }
 
+  // ---------- CSV check view (for shops; logic lives in assets/checker.js) ----------
+  const CSV_HEADER = "sku,brand,name,ref,grade,price,store_pickup,ships_overseas,shipping_fee,accessories,listed_on,status";
+  function viewCheck() {
+    const shops = Object.entries(SHOPS).sort((a, b) => sname(a[0]).localeCompare(sname(b[0]), st.lang));
+    return `<section class="page-head"><h1>${t("checkH")}</h1><p class="lede">${t("checkLede")}</p></section>
+    <div class="check-grid">
+      <section class="panel ck-panel">
+        <div class="ck-form">
+          <label class="f-group"><span class="f-label">${t("checkShop")}</span>
+            <select id="checkShop"><option value="">—</option>${shops.map(([k]) => `<option value="${k}">${esc(sname(k))} (${k}.csv)</option>`).join("")}</select></label>
+          <label class="drop" id="dropZone">
+            <input type="file" id="csvFile" accept=".csv,text/csv">
+            <strong>${t("checkDrop")}</strong><span class="muted sm">${t("checkDropSub")}</span>
+          </label>
+        </div>
+        <div id="checkOut" class="ck-out" aria-live="polite"></div>
+      </section>
+      <aside class="ck-side">
+        <section class="panel"><div class="panel-head"><h2>${t("checkColsH")}</h2></div>
+          <p class="muted sm pad">${t("checkColsP")}</p>
+          <div class="codebox"><code id="csvHeader">${CSV_HEADER}</code><button class="btn ghost" data-copy="csvHeader">${t("copy")}</button></div>
+          <ul class="ck-cols">${t("checkCols").map(([c, d]) => `<li><code>${c}</code> ${d}</li>`).join("")}</ul>
+          <p class="pad sm"><a href="data/templates/listings-template.csv">${t("checkTemplate")}</a></p>
+        </section>
+        <section class="panel"><div class="panel-head"><h2>${t("sendH")}</h2></div>
+          <ol class="steps sm">${t("sendSteps").map(x => `<li>${x}</li>`).join("")}</ol>
+        </section>
+      </aside>
+    </div>`;
+  }
+
   // ---------- chrome ----------
   function renderChrome(r) {
     document.documentElement.lang = st.lang;
@@ -419,6 +450,7 @@
       $("modeHint").textContent = t("modeHint")[st.mode];
     }
     $("note").textContent = t("note");
+    $("forShops").textContent = t("forShops");
   }
 
   let lastView = "";
@@ -428,10 +460,11 @@
     const v = $("view");
     const active = keepFocus && document.activeElement && document.activeElement.id;
     const caret = active === "q" ? $("q").selectionStart : null;
-    v.innerHTML = r.view === "item" ? viewItem(r.id) : r.view === "shops" ? viewShops() : r.view === "watchlist" ? viewWatch() : r.view === "guide" ? viewGuide() : viewSearch();
+    v.innerHTML = r.view === "item" ? viewItem(r.id) : r.view === "shops" ? viewShops() : r.view === "watchlist" ? viewWatch() : r.view === "guide" ? viewGuide() : r.view === "check" ? viewCheck() : viewSearch();
     const key = r.view + (r.id || "");
     if (key !== lastView) { window.scrollTo(0, 0); lastView = key; }
     if (active && $(active)) { $(active).focus(); if (caret != null) $(active).setSelectionRange(caret, caret); }
+    document.dispatchEvent(new CustomEvent("tsugi:render", { detail: { view: r.view, lang: st.lang } }));
     document.title = r.view === "item" ? `${itemById(r.id).brand} ${iname(itemById(r.id))} · Tsugi` : "Tsugi Resale Compare";
   }
 
@@ -466,6 +499,12 @@
     else if (d.shopGo) { clearFilters(true); st.shops.add(d.shopGo); go("search"); }
     else if (d.alertClear) { const w = st.watch[+d.alertClear]; if (w) { w.target = null; store.set(); render(); } }
     else if (el.id === "fbtn") { st.showFilters = !st.showFilters; render(); }
+    else if (d.copy) {
+      const src = $(d.copy), text = src.textContent;
+      const done = () => toast(t("copied"));
+      const fallback = () => { const r = document.createRange(); r.selectNodeContents(src); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); };
+      try { navigator.clipboard.writeText(text).then(done, fallback); } catch (_) { fallback(); }
+    }
   });
 
   document.addEventListener("input", e => {

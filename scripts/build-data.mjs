@@ -4,17 +4,21 @@
 //   npm run build:data            write assets/data.js and print a report
 //   npm run build:data -- --check fail if assets/data.js is out of date (for CI)
 //   npm run build:data -- --strict treat warnings (e.g. unmatched listings) as failures
-import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from "node:fs";
+//   npm run build:data -- --summary <file>  also append a Markdown report (GitHub Actions job summary)
+import { readFileSync, writeFileSync, appendFileSync, readdirSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildData, renderDataJS } from "./lib/build.mjs";
 import { toCSV } from "./lib/csv.mjs";
+import { decodeText } from "./lib/decode.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dataDir = join(root, "data");
 const out = join(root, "assets", "data.js");
-const args = new Set(process.argv.slice(2));
-const read = f => readFileSync(f, "utf8");
+const argv = process.argv.slice(2);
+const args = new Set(argv);
+const summaryPath = argv.includes("--summary") ? argv[argv.indexOf("--summary") + 1] : null;
+const read = f => decodeText(readFileSync(f)).text; // UTF-8 or Shift_JIS
 
 const listingDir = join(dataDir, "listings");
 const listingCSVs = {};
@@ -43,6 +47,25 @@ mkdirSync(reportDir, { recursive: true });
 writeFileSync(join(reportDir, "unmatched.csv"), toCSV(["shop", "line", "sku", "brand", "name", "ref"],
   stats.unmatched.map(u => [u.shop, u.line, u.sku, u.brand, u.name, u.ref])));
 if (stats.unmatched.length) console.log(`Unmatched listings written to build/unmatched.csv`);
+
+if (summaryPath) {
+  const cell = v => String(v).replace(/\|/g, "\\|");
+  const lines = [
+    `## ${errors.length ? "❌ CSV import failed" : warns.length ? "⚠️ CSV imported with warnings" : "✅ CSV imported"}`,
+    "",
+    `| Shop files | Listings | Matched | Unmatched | Sold / on hold | Skipped (errors) | Items on site |`,
+    `|---|---|---|---|---|---|---|`,
+    `| ${Object.keys(listingCSVs).length} | ${stats.listings} | ${stats.matched} | ${stats.unmatched.length} | ${stats.sold} | ${stats.skipped} | ${stats.items} |`,
+    ""
+  ];
+  if (problems.length) {
+    lines.push("| Level | Where | Problem |", "|---|---|---|");
+    problems.forEach(p => lines.push(`| ${p.level === "error" ? "Error" : "Warning"} | \`${cell(p.where)}\` | ${cell(p.msg)} |`));
+    lines.push("");
+  }
+  if (errors.length) lines.push("The site was **not** updated. Fix the rows above and upload the file again.", "");
+  appendFileSync(summaryPath, lines.join("\n") + "\n");
+}
 
 if (errors.length) { console.error("\nNot written: fix the errors above first."); process.exit(1); }
 if (args.has("--strict") && warns.length) { console.error("\nNot written: --strict and there are warnings."); process.exit(1); }

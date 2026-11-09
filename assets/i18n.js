@@ -78,7 +78,19 @@ window.TSUGI_I18N = {
     gAuth: "Authenticity",
     gAuthP: "All shops listed are licensed secondhand dealers (古物商) and authenticate items in-house. Ask the shop for its guarantee terms before buying high-value pieces.",
     note: "All shops, prices, stock and price history on this page are made-up examples for the prototype. Exchange rates are fixed demo values and shipping fees are estimates.",
-    zones: { asia: "Asia", na: "North America", eu: "Europe", oc: "Oceania" }
+    zones: { asia: "Asia", na: "North America", eu: "Europe", oc: "Oceania" },
+    forShops: "For shops: check a listings CSV",
+    checkH: "Check your listings CSV",
+    checkLede: "Choose your shop and drop in the CSV you plan to send. It is checked right here in your browser with the same rules the site uses, and nothing is uploaded.",
+    checkShop: "Your shop", checkDrop: "Drop your CSV here or click to choose", checkDropSub: "UTF-8 or Shift_JIS (Excel) both work",
+    checkColsH: "Columns", checkColsP: "First row must be these column names. Only brand, name, grade and price are required.",
+    copy: "Copy", copied: "Copied",
+    checkCols: [["ref", "model or reference number; matched first"], ["grade", "S, A, AB, B, C (Aランク and 美品 also work)"], ["price", "yen including tax, e.g. 1,298,000"],
+      ["accessories", "box; dust bag; papers; receipt"], ["listed_on", "e.g. 2026-11-01"], ["status", "売約済 or 商談中 rows are skipped"]],
+    checkTemplate: "Template CSV with example rows",
+    sendH: "Sending it",
+    sendSteps: ["Fix any errors this page shows.", "Name the file after your shop, e.g. kotori.csv, and send it to your Tsugi contact.",
+      "Once it's added, the site updates by itself within a few minutes. Send a new file whenever your stock changes; it replaces the previous one."]
   },
   ja: {
     tagline: "日本のリユースを、まとめて比較",
@@ -158,6 +170,18 @@ window.TSUGI_I18N = {
     gAuth: "真贋について",
     gAuthP: "掲載ショップはすべて古物商許可を持ち、自社で真贋鑑定を行っています。高額品は購入前に保証内容をショップに確認してください。",
     note: "このページのショップ・価格・在庫・価格推移はすべてプロトタイプ用の架空の例です。為替レートはデモ用の固定値、送料は概算です。",
-    zones: { asia: "アジア", na: "北米", eu: "ヨーロッパ", oc: "オセアニア" }
+    zones: { asia: "アジア", na: "北米", eu: "ヨーロッパ", oc: "オセアニア" },
+    forShops: "ショップの方へ：出品CSVのチェック",
+    checkH: "出品CSVのチェック",
+    checkLede: "ショップを選んで、送る予定のCSVをドロップしてください。サイトと同じルールで、このブラウザの中だけでチェックします。ファイルはアップロードされません。",
+    checkShop: "ショップ", checkDrop: "ここにCSVをドロップ、またはクリックして選択", checkDropSub: "UTF-8・Shift_JIS（Excel）どちらも使えます",
+    checkColsH: "列の一覧", checkColsP: "1行目はこの列名にしてください。必須は brand・name・grade・price だけです。",
+    copy: "コピー", copied: "コピーしました",
+    checkCols: [["ref", "型番。最優先で照合します"], ["grade", "S・A・AB・B・C（Aランク・美品なども可）"], ["price", "税込の円（例：1,298,000）"],
+      ["accessories", "箱;保存袋;ギャランティ;レシート"], ["listed_on", "例：2026-11-01"], ["status", "売約済・商談中の行は取り込みません"]],
+    checkTemplate: "記入例つきのひな形CSV",
+    sendH: "送り方",
+    sendSteps: ["このページで出たエラーを直します。", "ファイル名をショップIDにして（例：kotori.csv）、Tsugiの担当者に送ります。",
+      "登録されると、数分でサイトに自動で反映されます。在庫が変わったら新しいファイルを送ってください。前のファイルと置き換わります。"]
   }
 };

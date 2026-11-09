@@ -1,15 +1,17 @@
+# Checks branches and pull requests. Deploying happens in deploy.yml (main only).
 name: CI
 on:
   push:
+    branches-ignore: [main]
   pull_request:
 jobs:
-  data:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Import CSV files
+        run: node scripts/build-data.mjs --summary "$GITHUB_STEP_SUMMARY"
       - run: npm test
-      - name: assets/data.js matches the CSV files
-        run: npm run check:data

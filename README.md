@@ -32,13 +32,26 @@ Edit the CSV files in `data/` (see `data/README.md` for the format, in Japanese)
 ```
 npm run build:data   # validate, match and write assets/data.js
 npm test             # import tests
+npm run build:site   # assemble the deployable site in _site/
 ```
 Shops can send their listings as a CSV (Excel "CSV UTF-8" is fine). Grades, prices, dates and
 accessories are accepted in common Japanese and English forms. Listings that match no product are
 written to `build/unmatched.csv`.
 
+## Automatic publishing (GitHub Pages)
+Upload a shop's CSV into `data/listings/` on `main` (GitHub web: **Add file → Upload files**).
+The **Deploy** workflow then imports all CSVs, commits the rebuilt `assets/data.js`, and publishes
+the site to GitHub Pages. If any CSV has errors, nothing is published and the run summary lists
+each bad row. Branches and pull requests get the same checks from the **CI** workflow.
+
+One-time setup: repository **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+
+Shops can check a file before sending it on the site's **CSV check** page (`#check`). It runs the
+same import code in the browser, accepts UTF-8 or Shift_JIS, and uploads nothing.
+
 ## Run locally
-Any static server works, e.g. `python3 -m http.server` and open http://localhost:8000.
+`npm run build:site`, then serve `_site/` with any static server (e.g. `cd _site && python3 -m http.server`)
+and open http://localhost:8000. The CSV check page needs a server (it loads ES modules and CSVs).
 
 ## Data note
 All shops, prices, stock and price history are fictional sample data. Exchange rates are fixed demo values.
